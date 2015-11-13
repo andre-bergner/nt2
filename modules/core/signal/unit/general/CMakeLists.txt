@@ -11,10 +11,32 @@ if(APPLE)
   nt2_module_use_link_flags(-framework Accelerate)
 endif()
 
-set( SOURCES
-  static_fft.cpp
-  zero_crossing_rate.cpp
-  globalzero_crossing_rate.cpp
-  )
+find_package(FFTW)
+
+if(FFTW_FOUND)
+
+  set ( SOURCES
+        fft.cpp
+        static_fft.cpp
+        zero_crossing_rate.cpp
+        globalzero_crossing_rate.cpp
+      )
+
+include_directories(${FFTW_INCLUDES})
+link_libraries(${FFTW_LIBRARIES})
+
+add_definitions("-DNT2_USE_FFTW")
+
+else()
+
+set ( SOURCES
+      static_fft.cpp
+      zero_crossing_rate.cpp
+      globalzero_crossing_rate.cpp
+    )
+
+endif()
+
 
 nt2_module_add_tests(core.signal.general.unit ${SOURCES})
+
